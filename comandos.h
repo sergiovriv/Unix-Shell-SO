@@ -12,7 +12,7 @@ void autores(char *trozos[]);
 
 void pid(char *trozos[]);
 
-//void fecha(char *trozos[]);
+void fecha(char *trozos[]);
 
 void infosis(char *trozos[]);
 

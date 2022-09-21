@@ -50,28 +50,28 @@ void pid(char *trozos[]){
 }
 
 /* Mostrar fecha y hora de hoy */
-/* void fecha(char *trozos[]){
-    struct tm *tm;
-    char fecha[100];
-
-    tm = localtime(&tm);
-
+ void fecha(char *trozos[]){
+    time_t t= time(NULL);
+    struct tm *fecha = localtime(&t);
+    char datepr[100];
+    
+    
     if(strcmp(trozos[1], "-d") == 0) { // (-d) Imprimir ano/mes/dia
-        strftime(fecha, 100, "%d/%m/%Y", tm);
-        printf("%d/%m/%Y", fecha);
+        strftime(datepr, 100, "%d/%m/%Y", fecha);
+        printf("Current date: %s ", datepr);
     }
 
     else if(strcmp(trozos[1], "-h") == 0) { // (-h) Imprimir hora/min/seg
-        strftime(fecha, 100, "%H/%M/%S", tm);
-        printf("%H/%M/%S", fecha);
+        strftime(datepr, 100, "%H:%M:%S", fecha);
+        printf("Current time: %s", datepr);
     }
 
     else {  // Imprimir las dos cosas
-        strftime(fecha, 100, "%d/%m/%Y %H/%M/%S", tm);
-        printf("%d/%m/%Y, %H/%M/%S", fecha);
+        strftime(datepr, 100, "%d/%m/%Y %H:%M:%S", fecha);
+        printf("Current date & time: %s ", datepr);
     }
 
-} */
+} 
 
 /* Mostrar informacion de la maquina */
 void infosis(char *tokens[]){
@@ -79,7 +79,7 @@ void infosis(char *tokens[]){
     uname(&unameData);
     
     if(uname(&unameData) < 0) { //control de errores
-        printf("fallo obteniendo datos del sistema");
+        printf("Command infosis failed");
     }
     printf("%s %s %s %s %s/n", unameData.nodename, unameData.machine, unameData.sysname,
            unameData.release, unameData.version); //imprimimos datos sistema
