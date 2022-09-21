@@ -14,7 +14,7 @@ void pid(char *trozos[]);
 
 //void fecha(char *trozos[]);
 
-//void infosis(char *trozos[]);
+void infosis(char *trozos[]);
 
 int carpeta(char *trozos[]);
 

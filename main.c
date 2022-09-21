@@ -43,10 +43,10 @@ void procesarEntrada(char *trozos[]){
         carpeta(&trozos[MAX_TROZOS]);
 
     /* else if(strcmp(trozos[0], "fecha") == 0)  // Fecha
-        fecha(&trozos[MAX_TROZOS]);
+        fecha(&trozos[MAX_TROZOS]); */
 
     else if(strcmp(trozos[0], "infosis") == 0)  // Infosis
-        infosis(&trozos[MAX_TROZOS]); */
+        infosis(&trozos[MAX_TROZOS]);
 
     else if(strcmp(trozos[0], "carpeta") == 0)  // Carpeta
         carpeta(&trozos[MAX_TROZOS]);

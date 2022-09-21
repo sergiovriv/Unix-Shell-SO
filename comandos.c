@@ -74,10 +74,16 @@ void pid(char *trozos[]){
 } */
 
 /* Mostrar informacion de la maquina */
-/* void infosis(char *tokens[]){
-    printf("%s %s %s %s %s", sys.nodename, sys.machine, sys.sysname,
-           sys.release, sys.version);
-} */
+void infosis(char *tokens[]){
+    struct utsname unameData;
+    uname(&unameData);
+    
+    if(uname(&unameData) < 0) { //control de errores
+        printf("fallo obteniendo datos del sistema");
+    }
+    printf("%s %s %s %s %s/n", unameData.nodename, unameData.machine, unameData.sysname,
+           unameData.release, unameData.version); //imprimimos datos sistema
+}
 
 int carpeta(char *trozos[]){
     if(strcmp(trozos[1], "-direct") == 0)  // (-direct) - cambiar de directorio a direct
