@@ -36,8 +36,8 @@ void procesarEntrada(char *trozos[]){
     if(strcmp(trozos[0], "autores") == 0)  // Autores
         autores(&trozos[MAX_TROZOS]);
 
-    // else if(strcmp(trozos[0], "pid") == 0) //Pid
-       // pid();
+    else if(strcmp(trozos[0], "pid") == 0) //Pid
+        pid(&trozos[MAX_TROZOS]);
 
     else if(strcmp(trozos[0], "carpeta") == 0) // Carpeta
         carpeta(&trozos[MAX_TROZOS]);
