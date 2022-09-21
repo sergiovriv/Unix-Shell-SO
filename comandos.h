@@ -10,7 +10,7 @@
 #define MAX 50
 void autores(char *trozos[]);
 
-// FALTA PID !!!
+void pid(char *trozos[]);
 
 //void fecha(char *trozos[]);
 

@@ -36,6 +36,18 @@ void autores(char *trozos[]){
         printf("Claudia, Sergio / c.maciel, sergio.vila1");
 }
 
+/*imprimir PID*/
+void pid(char *trozos[]){
+    int pid, parent;
+    if(strcmp(trozos[1], "-p") ==0) { // (-p) Imprimir proceso padre de la shell
+        parent= getppid();
+        printf("el pid padre de la shell es: %d/n", parent);
+
+    }else{ //Imprimir proceso actual de la shell
+        pid= getpid();
+        printf("El pid del proceso actual es: %d/n", pid);
+    }
+}
 
 /* Mostrar fecha y hora de hoy */
 /* void fecha(char *trozos[]){
