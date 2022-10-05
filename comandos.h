@@ -5,22 +5,31 @@
 #ifndef CLION_COMANDOS_H
 #define CLION_COMANDOS_H
 
-#endif //CLION_COMANDOS_H
-
+#include "lista.h"
 #define MAX 50
-void autores(char *trozos[]);
 
-void pid(char *trozos[]);
+int autores(char trozos[1], int ntrozos);
 
-void fecha(char *trozos[]);
+int fecha(char trozos[1], int ntrozos);
 
-void infosis(char *trozos[]);
+int pid(char trozos[1], int ntrozos);
 
-int carpeta(char *trozos[]);
+int infosis(char trozos[1]);
 
-void ayuda(char *trozos[]);
+int hist(char trozos[1], int ntrozos, List *head);
 
-void salir(char *trozos[]);
+int carpeta(char trozos[1], int ntrozos);
 
-void comandoN(char *trozos[]);
+int ayuda(char trozos[1], int ntrozos);
 
+void salir(char trozos[0]);
+
+int comandoN(char trozos[1], int ntrozos, List *head);
+int leerEntrada(char *cadena, int terminado, List *head);
+
+int create(char *trozos[], int ntrozos);
+
+int stats(char *trozos[], int ntrozos);
+
+
+#endif //CLION_COMANDOS_H
