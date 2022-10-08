@@ -200,7 +200,8 @@ int ayuda(char trozos[1], int ntrozos) {
         }
     }
     printf(" autores[-l|-n] / pid[-p] / carpeta[direct] / fecha[-d|-h] / hist[-c|-N] / ");
-    printf("comando N / infosis / ayuda[cmd] / fin / salir / bye / create [-f][name] \n");
+    printf("comando N / infosis / ayuda[cmd] / fin / salir / bye / create [-f][name] \n
+            list [-reca] [-recb] [-hid][-long][-link][-acc] n1 n2 .. \n");
     return 0;
 }
 
@@ -341,3 +342,4 @@ int stats(char *trozos[], int ntrozos){
     }
 }
 
+//list
