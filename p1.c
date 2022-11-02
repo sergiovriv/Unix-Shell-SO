@@ -1,12 +1,14 @@
 /* Claudia Maciel Montero */
 /* c.maciel  */
+/* Sergio Vila Riveira */
+/* sergio.vila1 */
 
 #include <stdio.h>
 #include <string.h>
 #include "comandos.h"
 
-#define MAX_TROZOS 5
-#define MAX_COM 50
+#define MAX_TROZOS 10
+#define MAX_COM 100
 
 int TrocearCadena(char *cadena, char *trozos[]){
     int i = 1;
@@ -40,7 +42,7 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head){
         hist(trozos[1], ntrozos, head);
 
     else if(strcmp(trozos[0], "carpeta") == 0)  // Carpeta
-        carpeta(trozos[1], ntrozos);
+        carpeta(trozos, ntrozos);
 
     else if(strcmp(trozos[0], "comando") == 0)   // ComandoN
         comandoN(trozos[1], ntrozos, head);
@@ -60,8 +62,17 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head){
     else if(strcmp(trozos[0], "create") == 0) // Create
         create(trozos, ntrozos);
 
-    else if(strcmp(trozos[0], "stats") == 0) // Stat
+    else if(strcmp(trozos[0], "stat") == 0) // Stat
         stats(trozos, ntrozos);
+
+    else if(strcmp(trozos[0], "list") == 0) // List
+        list(trozos, ntrozos);
+
+    else if(strcmp(trozos[0], "delete") == 0) // Delete
+        delete(trozos, ntrozos);
+
+    else if(strcmp(trozos[0], "deltree") == 0) // DelTree
+        deltree(trozos, ntrozos);
 
     else
         printf(" No se ha encontrado el comando\n");
@@ -75,13 +86,11 @@ int leerEntrada(char *cadena, int terminado, List *head){
 
     if(ntrozos != 0) {
         terminado = -1;
-        //insertItem(cadena, head);  // Añadir el comando en la lista
 
         procesarEntrada(trozos, ntrozos, head);
     }
     else // Si no se escribio nada salir
         terminado = 0;
-
 
     return terminado;
 }
@@ -91,17 +100,17 @@ int main(){
     int terminado = -1;
 
     List head;
-    createlist(&head);  // Crear la lista
+    createlist(&head);  // Crear la lista nodo cabeza
 
     while (terminado != 0){
         imprimirPrompt();
 
         fgets(comando, MAX_COM, stdin);
-        if(insertItem(comando, &head))
+        if (insertItem(comando, &head))  // Añadir el comando a la lista
         terminado = leerEntrada(comando, terminado, &head);
 
         else {
-            printf("Lista vacia\n");  // No se puede insertar (se borro la lista)
+            printf(" * Error: lista vacia\n");  // No se pudo insertar (se borro la lista...)
             createlist(&head);  // Crear la lista
         }
     }

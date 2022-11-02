@@ -1,35 +1,54 @@
-//
-// Created by claudia on 20/09/22.
-//
+/* Claudia Maciel Montero */
+/* c.maciel  */
+/* Sergio Vila Riveira */
+/* sergio.vila1 */
 
 #ifndef CLION_COMANDOS_H
 #define CLION_COMANDOS_H
 
 #include "lista.h"
-#define MAX 50
+#include <sys/utsname.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <pwd.h>
+#include <errno.h>
+#include <dirent.h>
+#include <grp.h>
 
-int autores(char trozos[1], int ntrozos);
+#define MAX 100
+#define BUF 1024
 
-int fecha(char trozos[1], int ntrozos);
+void autores(char trozos[1], int ntrozos);
 
-int pid(char trozos[1], int ntrozos);
+void fecha(char trozos[1], int ntrozos);
 
-int infosis(char trozos[1]);
+void pid(char trozos[1], int ntrozos);
 
-int hist(char trozos[1], int ntrozos, List *head);
+void infosis(char trozos[1]);
 
-int carpeta(char trozos[1], int ntrozos);
+void hist(char trozos[1], int ntrozos, List *head);
 
-int ayuda(char trozos[1], int ntrozos);
+void carpeta(char *trozos[], int ntrozos);
+
+void ayuda(char trozos[1], int ntrozos);
 
 void salir(char trozos[0]);
 
-int comandoN(char trozos[1], int ntrozos, List *head);
+void comandoN(char trozos[1], int ntrozos, List *head);
 int leerEntrada(char *cadena, int terminado, List *head);
 
-int create(char *trozos[], int ntrozos);
+void create(char *trozos[], int ntrozos);
 
-int stats(char *trozos[], int ntrozos);
+void stats(char *trozos[], int ntrozos);
 
+int list(char *trozos[], int ntrozos);
+bool list_dir(char *name, int op[]);
+
+int delete(char *trozos[], int ntrozos);
+
+int deltree(char *trozos[], int ntrozos);
 
 #endif //CLION_COMANDOS_H

@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/vila/git-local/SISTEMAS-OPERATIVOS-",
+            "binaryPath": "/home/vila/git-local/SISTEMAS-OPERATIVOS-/shell",
+            "binaryArgs": []
+        }
+    ]
+}
