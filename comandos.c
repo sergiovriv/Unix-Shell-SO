@@ -1,12 +1,11 @@
-/* Claudia Maciel Montero */
-/* c.maciel  */
-/* Sergio Vila Riveira */
-/* sergio.vila1 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "comandos.h"
+#include "aux.h"
+
+int xg=0, yg=0, zg=0;
 
 /* Mostrar autores */
 void autores(char trozos[1], int ntrozos){
@@ -115,66 +114,80 @@ void ayuda(char trozos[1], int ntrozos) {
         if (strcmp(trozos, "autores") == 0)  // Autores
             printf(" Imprime nombres y login de los autores\n * [-l] Imprime solo logins\n * [-n] Imprime solo los nombres\n");
 
-        if (strcmp(trozos, "pid") == 0)  //Pid
+        else if (strcmp(trozos, "pid") == 0)  //Pid
             printf(" Muestra el pid del shell \n * [-p] Muestra el pid del proceso padre\n");
 
-        if (strcmp(trozos, "fecha") == 0) {  // Fecha
+        else if (strcmp(trozos, "fecha") == 0) {  // Fecha
             printf(" Imprime la fecha y hora actuales\n * [-d] Imprime la fecha actual en el formato: DD/MM/YYYY\n");
             printf(" * [-h] Imprime la hora actual en el formato: hh:mm:ss\n");
-        }
-
-        if (strcmp(trozos, "hist") == 0) {  // hist
+        } else if (strcmp(trozos, "hist") == 0) {  // hist
             printf(" Muestra / Borra el historial de comandos\n * hist Muestra el historial de comandos");
             printf(" * [-c] Borra el historial de comandos\n * [-N] Imprime los primeros N comandos\n");
-        }
-
-        if(strcmp(trozos, "infosis") == 0)   // Infosis
+        } else if (strcmp(trozos, "infosis") == 0)   // Infosis
             printf(" Muestra informacion de la maquina ejecuntando esta shell\n");
 
-        if (strcmp(trozos, "carpeta") == 0)   // Carpeta
+        else if (strcmp(trozos, "carpeta") == 0)   // Carpeta
             printf(" Muestra el directorio actual \n * carpeta (direct) Cambia el directorio a direct\n");
 
-        if(strcmp(trozos, "ayuda") == 0)  // Ayuda
+        else if (strcmp(trozos, "ayuda") == 0)  // Ayuda
             printf(" Muestra la lista de los comandos disponibles\n * [cmd] Muestra la ayuda del comando cmd\n");
 
-        if (strcmp(trozos, "comandoN") == 0) // ComandoN
+        else if (strcmp(trozos, "comandoN") == 0) // ComandoN
             printf(" Repite el comando numero N\n");
 
-        if (strcmp(trozos, "salir") == 0)  // Salir (salir)
+        else if (strcmp(trozos, "salir") == 0 || strcmp(trozos, "bye") == 0 || strcmp(trozos, "fin") == 0)  // Salir
             printf(" Termina la ejecucion del shell\n");
 
-        if (strcmp(trozos, "bye") == 0)  // Salir (bye)
-            printf(" Termina la ejecucion del shell\n");
-
-        if (strcmp(trozos, "fin") == 0)  // Salir (fin)
-            printf(" Termina la ejecucion del shell\n");
-
-        if (strcmp(trozos, "create") == 0)  // Create
+        else if (strcmp(trozos, "create") == 0)  // Create
             printf(" Crea un archivo o directorio\n * create -f [name] Crea un fichero\n * create [name] Crea un directorio\n");
 
-        if (strcmp(trozos, "stat") == 0) { // Stat
+        else if (strcmp(trozos, "stat") == 0) { // Stat
             printf(" stat [-long][-acc][-link] name1 name2... Muestra informacion de arhivos y directorios\n");
             printf(" * stat [-long] Muestra mas informacion\n * stat [-acc] Muestra ultimo acceso\n");
             printf(" * stat [-link] Si tiene links simbolicos\n");
-        }
-
-        if (strcmp(trozos, "delete") == 0)  // Delete
+        } else if (strcmp(trozos, "delete") == 0)  // Delete
             printf(" delete name1 name2... Borra archivos y/o directorios vacios\n");
 
-        if (strcmp(trozos, "list") == 0) { // List
+        else if (strcmp(trozos, "list") == 0) { // List
             printf(" list [-reca][-recb][-hid][-long][-link][-acc] n1 n2 ... Muestra archivos y directorios\n");
             printf(" * [-hid] Muestra directorios ocultos\n * [-reca] Muestra de forma recursiva (antes)\n * [-recb] Muestra de forma recursiva (despues)\n");
             printf(" * [-long][-link][-acc] Igual que stat. Ver 'ayuda stat' para mas info\n");
-        }
-
-        if (strcmp(trozos, "deltree") == 0) { // DeleteTree
+        } else if (strcmp(trozos, "deltree") == 0)  // DeleteTree
             printf(" delete name1 name2... Borra archivos y/o directorios no vacios de forma recursiva\n");
-        }
 
-    } else {  // Mostrar todos los comandos
-        printf(" Comandos disponibles: autores [-l|-n] / pid [-p] / carpeta (direct) / fecha [-d|-h] / hist [-c|-N] / ");
-        printf("comando N / infosis / ayuda [cmd] / fin / salir / bye \n / create [-f][name] / stat [-long][-acc][-link] name1 name2... / delete name1, name2... / ");
-        printf("list [-long][-link][-acc][-reca][-recb][-hid] / deltree\n");
+        else if (strcmp(trozos, "allocate") == 0) {  // Allocate
+            printf(" allocate [-malloc|-createshared|-shared|-mmap] Asigna un bloque de memoria\n");
+            printf(" * [-malloc] tam: asigna un bloque malloc de tamano tam \n\tallocate -malloc muestra la lista de bloques malloc asignados\n");
+            printf(" * [-createshared] cl tam: asigna (creando) un bloque de memoria compartida de clave cl y tamano tam \n\tallocate -createshared muestra la lista de bloques shared asignados\n");
+            printf(" * [-shared] cl: asigna el bloque de memoria compartida (ya existente) de clave cl \n\tallocate -shared muestra la lista de bloques shared asignados\n");
+            printf(" * [-mmap] fich perm: mapea el fichero fich, perm son los permisos \n\tallocate -mmap muestra la lista de bloques mmap asignados\n");
+        } else if (strcmp(trozos, "deallocate") == 0) {  // Deallocate
+            printf(" deallocate [-malloc|-shared|-delkey|-mmap|addr] Desasigna un bloque de memoria\n");
+            printf(" * [-malloc] tam: desasigna un bloque malloc de tamano tam \n\tdeallocate -malloc muestra la lista de bloques malloc asignados\n");
+            printf(" * [-shared] cl: desasigna (desmapea) el bloque de memoria compartida de clave cl \n\tdeallocate -shared muestra la lista de bloques shared asignados\n");
+            printf(" * [-delkey] cl: elimina del sistema (sin desmapear) la clave de memoria cl\n");
+            printf(" * [-mmap] fich perm: mdesapea el fichero fich \n\tdeallocate -mmap muestra la lista de bloques mmap asignados\n");
+            printf(" * addr: desasigna el bloque de memoria en la direccion addr\n");
+        } else if (strcmp(trozos, "recursiva") == 0)  // Recursiva
+            printf(" recursiva [n] Ejecuta la funcion recursiva n veces\n");
+
+        else if (strcmp(trozos, "i-o") == 0) {  // i-o
+            printf("i-o [read|write] [-o] fich addr cont\n");
+            printf(" * [read] fich addr cont: lee cont bytes desde fich a addr\n");
+            printf(" * [write] [-o] fich addr cont: escribe cont bytes desde addr a fich [-o] para sobreescribir\n");
+        } else if (strcmp(trozos, "memdump") == 0) { // memdump
+            printf("memdump addr cont Vuelva en pantalla el contenido (cont es el numero de bytes) de la direccion de memoria adrr\n");
+
+        } else if(strcmp(trozos,"memory") == 0){ // memory
+            printf("memory [-blocks|-funcs|-vars|-all|-pmap]\nMuestra muestra detalles de la memoria del proceso\n-blocks: los bloques de memoria asignados\n-funcs: las direcciones de las funciones\n");
+		    printf("-vars: las direcciones de las variables\n-all: todo\n-pmap: muestra la salida del comando pmap(o similar)");
+        
+        } else {  // Mostrar todos los comandos
+            printf(" Comandos disponibles:\nautores [-l|-n] / pid [-p] / carpeta (direct) / fecha [-d|-h] / hist [-c|-N] / ");
+            printf("comando N / infosis / ayuda [cmd] / fin / salir / bye\ncreate [-f][name] / stat [-long][-acc][-link] name1 name2... / delete name1, name2... / ");
+            printf("list [-long][-link][-acc][-reca][-recb][-hid] name1, name2... / deltree name1, name2...\nallocate [-malloc|-createshared|-shared|-mmap] / ");
+            printf("deallocate [-malloc|-shared|-delkey|-mmap|addr] / i-o [read|write] [-o] fich addr cont / memdump addr cont / recursiva [n] /memory [-blocks|-funcs|-vars|-all|-pmap]\n");
+        }
     }
 }
 
@@ -191,7 +204,7 @@ void salir(char trozos[0]){
 }
 
 /* Repetir el comando numero N */
-void comandoN(char trozos[1], int ntrozos, List *head) {
+void comandoN(char trozos[1], int ntrozos, List *head, MemList *M, MemList *S, MemList *MP) {
     int N;
     char *comando;
 
@@ -200,7 +213,7 @@ void comandoN(char trozos[1], int ntrozos, List *head) {
         comando = find_n(N, head);
 
         printf("%s\n", comando);
-        leerEntrada(comando, ntrozos, head);  // Repetir el comando
+        leerEntrada(comando, ntrozos, head, M, S, MP);  // Repetir el comando
     }
 }
 
@@ -219,83 +232,6 @@ void create(char *trozos[], int ntrozos) {
 
     } else  // Mostrar el directorio actual
         carpeta(trozos, ntrozos);
-}
-
-/* Funciones de ayuda */
-char LetraTF (mode_t m) {
-    switch (m&S_IFMT) { /* And bit a bit con los bits de formato, 0170000 */
-        case S_IFSOCK: return 's'; /* socket */
-        case S_IFLNK: return 'l'; /* symbolic link */
-        case S_IFREG: return '-'; /* fichero normal */
-        case S_IFBLK: return 'b'; /* block device */
-        case S_IFDIR: return 'd'; /* directorio */
-        case S_IFCHR: return 'c'; /* char device */
-        case S_IFIFO: return 'p'; /* pipe */
-        default: return '?'; /* desconocido, no deberia aparecer */
-    }
-}
-
-/* Funcion de permisos */
-char * ConvierteModo2 (mode_t m) {
-    static char permisos[12];
-    strcpy (permisos,"---------- ");
-
-    permisos[0]=LetraTF(m);
-    if (m&S_IRUSR) permisos[1]='r';    /* propietario */
-    if (m&S_IWUSR) permisos[2]='w';
-    if (m&S_IXUSR) permisos[3]='x';
-    if (m&S_IRGRP) permisos[4]='r';    /* grupo */
-    if (m&S_IWGRP) permisos[5]='w';
-    if (m&S_IXGRP) permisos[6]='x';
-    if (m&S_IROTH) permisos[7]='r';    /* resto */
-    if (m&S_IWOTH) permisos[8]='w';
-    if (m&S_IXOTH) permisos[9]='x';
-    if (m&S_ISUID) permisos[3]='s';    /* setuid, setgid y stickybit */
-    if (m&S_ISGID) permisos[6]='s';
-    if (m&S_ISVTX) permisos[9]='t';
-
-    return permisos;
-}
-
-/* Mostrar informacion de un fichero */
-bool list_file(char *file, const int op[]){
-    struct stat buf;
-
-    if (stat(file, &buf) == -1) {
-        printf(" * Error: %s\n", strerror(errno));
-        return false;
-    }
-
-    else if(op[0] == 1) {  // stat [-long]
-        char *permisos;
-        struct passwd *p;
-        struct group *g;
-
-        if((p = getpwuid(buf.st_uid)) == NULL)  // Usuario
-            return -1;
-        if((g = getgrgid(buf.st_gid)) == NULL)  // Grupo
-            return -1;
-
-        permisos = ConvierteModo2(buf.st_mode);  // Obtener permisos
-
-        printf(" %s %lu (%lu)   User name: %s  GID: %s   %s   %ld %s\n",
-               ctime(&buf.st_mtime), buf.st_nlink, buf.st_ino, p->pw_name,
-               g->gr_name, permisos, buf.st_size, file);
-
-        if(op[1] == 1) {  // stat [-link]
-            if (buf.st_mode &S_IFLNK)
-                printf(" Symbolic link = true\n");
-            else
-                printf(" Symbolic link = false\n");
-        }
-
-        if(op[2] == 1)  // stat [-acc]
-            printf(" Last access: %s\n", ctime(&buf.st_atime));
-
-    } else
-        printf("\t%ld %s\n", buf.st_size, file);
-
-    return true;
 }
 
 /* Stat */
@@ -331,165 +267,6 @@ void stats(char *trozos[], int ntrozos){
     else { // No se mostro nada
         getcwd(cwd, MAX);
         printf("%s\n", cwd);    }
-}
-
-/* Funcion auxiliar para list [-reca] */
-int list_dirA(char *name, int op[]){
-    DIR *dir;
-    struct dirent *entry;
-    struct stat buf;
-    stat(name, &buf);
-    char aux[MAX];
-
-    dir = opendir(name);
-
-    if (op[0] == 0 && op[1] == 0 && op[2] == 0)
-        printf("\t%ld %s\n", buf.st_size, name);
-
-    printf("\n************ %s\n", name);
-
-    if (dir == NULL) {
-        printf(" * Error: %s\n", strerror(errno));
-        return false;
-    }
-
-    else {
-        while ((entry = readdir(dir)) != NULL) {  // Recorrer archivos del directorio
-            strcpy(aux, name);
-            strcat(strcat(aux, "/"), entry->d_name);
-
-            stat(aux, &buf);
-
-            if (entry->d_name[0] == '.' && op[5] == 1) {  // [-hid] Mostrar directorios / archivos ocultos
-                if (!list_file(aux, op))
-                    return false;
-            }
-            if (S_ISDIR(buf.st_mode) && entry->d_name[0] != '.' && op[3] == 1) {  // Si es un directorio y [-reca]
-                if (!list_dirA(aux, op))
-                    return false;
-            }
-            if (entry->d_name[0] != '.' && (op[3] == 1 || op[4] == 1) && !S_ISDIR(buf.st_mode)) {
-                if (!list_file(aux, op))
-                    return false;
-            }
-        }
-    }
-    closedir(dir);  // Cerrar directorio
-    return true;
-}
-
-/* Funcion auxiliar para list [-recb] */
-bool list_dirB(char *name, int op[]){
-    DIR *dir;
-    struct dirent *entry;
-    struct stat buf;
-    stat(name, &buf);
-    char aux[MAX];
-    int i = 0;
-
-    dir = opendir(name);
-
-    if (dir == NULL) {
-        perror("opendir() error");
-        return false;
-    }
-
-    else {
-        while ((entry = readdir(dir)) != NULL) {  // Recorrer archivos del directorio
-            strcpy(aux, name);
-            strcat(strcat(aux, "/"), entry->d_name);
-
-            stat(aux, &buf);
-
-            if (entry->d_name[0] != '.' && op[4] == 1) {  // Si es un directorio y [-recb]
-                if (S_ISDIR(buf.st_mode)) {
-                    i++;
-                    list_dirB(aux, op);
-
-                    op[4] = 0;  // Desactivar [-recb] para que no sea un bucle infinito
-                    op[6] = 1;  // opcion aux
-                    printf("************* %s\n", name);
-                    list_dir(name, op);
-                }
-                if (entry->d_name[0] == '.' && op[5] == 1) {  // [-hid]
-                    if (!list_file(aux, op))
-                        return false;
-                }
-            } else {
-                    if (entry->d_name[0] != '.')
-                        printf("\t%ld %s\n", buf.st_size, entry->d_name);
-            }
-        }
-        if(i == 0) {   // Ultima entrada
-            printf("************* %s\n", name);
-            op[4] = 0;
-            op[6] = 1;
-            list_dir(name, op);
-        }
-    }
-    closedir(dir);  // Cerrar directorio
-    return true;
-}
-
-/* Mostrar informacion de directorios */
-bool list_dir(char *name, int op[]) {
-    DIR *dir;
-    struct dirent *entry;
-    char aux[MAX];
-    struct stat buf;
-
-    dir = opendir(name);
-
-    if((dir = opendir(name)) == NULL)
-        return false;
-
-    if (dir == NULL) {
-        perror("opendir() error");
-        return false;
-    }
-
-    if(op[4] == 1 && op[3] == 1)  // Si es [-reca] y [-recb] entonces [-recb] tiene prefencia
-        op[3] = 0;
-
-    if(op[4] == 1){  // [-recb] Mostrar archivos despues (desde el final hasta donde estoy)
-        if(!list_dirB(name, op))
-            return -1;
-    }
-
-    else {
-        if(op [6] == 0)
-            printf("************* %s\n", name);
-
-        while ((entry = readdir(dir)) != NULL) {  // Recorrer archivos del directorio
-            strcpy(aux, name);
-            strcat(strcat(aux, "/"), entry->d_name);
-
-            stat(aux, &buf);
-
-            if (entry->d_name[0] == '.' && op[5] == 1) {  // [-hid] Mostrar directorios / archivos ocultos
-                if (!list_file(aux, op))
-                    return false;
-
-            }  else if (entry -> d_name[0] != '.' && op[3] == 0 && op[4] == 0) {
-                if (!list_file(aux, op))
-                    return false;
-
-            }  else if (S_ISDIR(buf.st_mode) && entry->d_name[0] != '.' && op[3] == 1) {  // Si es un directorio y [-reca]
-                if (entry -> d_name[0] != '.' && (op[0] == 1 || op[1] == 1 || op[2] == 1)) {
-                    if (!list_file(aux, op))
-                        return false;
-                }
-                if (!list_dirA(aux, op))  // [-reca] Mostrar archivos antes (desde donde estoy hasta el final)
-                    return false;
-
-            } else {
-                if (entry -> d_name[0] != '.')
-                    printf("\t%ld %s\n", buf.st_size, entry -> d_name);
-            }
-        }
-    }
-    closedir(dir);  // Cerrar directorio
-    return true;
 }
 
 /* List */
@@ -574,39 +351,7 @@ int delete(char *trozos[], int ntrozos){
     return 0;
 }
 
-int pimplarDir(char *name){
-    DIR *dir;
-    struct dirent *entry;
-    struct stat buf;
-    stat(name, &buf);
-    char aux[MAX];
-
-    dir = opendir(name);
-
-    if (dir == NULL) {
-        return false;
-    }
-
-    else {
-        while ((entry = readdir(dir)) != NULL) {  // Recorrer archivos del directorio
-            strcpy(aux, name);
-            strcat(strcat(aux, "/"), entry->d_name);
-
-            stat(aux, &buf);
-
-            if (entry->d_name[0] != '.') {
-                    pimplarDir(aux);
-                    if(buf.st_size != 0){  // Si no esta vacio -> vaciar
-                        stat(entry -> d_name, &buf);
-                        remove(entry -> d_name);
-                    }
-                    remove(aux);
-            }
-        }
-    }
-    return true;
-}
-
+/* Deltree */
 int deltree(char *trozos[], int ntrozos) {
     struct stat buf;
     DIR *dir;
@@ -642,3 +387,198 @@ int deltree(char *trozos[], int ntrozos) {
     return 0;
 }
 
+/* Allocate */
+int allocate(char *trozos[], MemList *M, MemList *S, MemList *MP){
+    MPos p, aux;
+    size_t tam;
+    key_t cl;
+
+    if (strcmp(trozos[1], "-malloc") == 0){
+        if(trozos[2] != NULL) {
+            tam = (size_t) strtoul(trozos[2], NULL, 10);  // Tamaño del bloque
+
+            if(tam == 0){
+                printf("No se asignan bloques de 0 bytes\n");
+                return 0;
+            }
+
+            struct MNode *block;  // Creamos el bloque
+            createMNode(&block);
+
+            time_t t = time(NULL);
+            char date[20];
+
+            struct tm *fecha = localtime(&t);
+            strftime(date, 100, "%d/%m/%Y %H:%M:%S\n", fecha);
+
+            strcpy(block->data.time, date); // Fecha de creacion
+            block->data.size = tam;  // Tamaño
+            block->data.dir = malloc(tam); // Direccion de memoria
+            strcpy(block->data.type, "malloc");  // Tipo (malloc)
+
+            InsertarNodoMalloc(M, block);
+
+            printf("Asignados %zu bytes en %p\n", tam, block->data.dir);
+        }
+
+        else  // Mostrar lista de direcciones (allocate -malloc)
+            printMemList(*M, 0);
+    }
+
+    else if (strcmp(trozos[1], "-createshared") == 0){
+        if(trozos[2] != NULL)
+            do_AllocateCreateshared(trozos, *S);
+        else
+            printMemList(*S, 1);
+    }
+
+    else if (strcmp(trozos[1], "-shared") == 0) {
+        if (trozos[2] != NULL) {
+            cl = (key_t) strtoul(trozos[2],NULL,10);  // Clave
+            aux = findKeyBlock(cl, *S); // Ver si existe esa clave
+
+            if(aux == NULL) {
+                printf("Imposible asignar memoria a la clave compartida %d\n", cl);
+                return 0;
+            }
+
+            p = ObtenerMemoriaShmget(cl, 0, S);
+            printf("Memoria compartida de clave %d en %p\n", cl, p);
+        }
+        else
+            printMemList(*S, 1);
+    }
+
+    else if (strcmp(trozos[1], "-mmap") == 0) {
+        if(trozos[2] != NULL)
+            do_AllocateMmap(trozos, MP);
+        else
+             printMemList(*MP, 2);
+    }
+    return 0;
+}
+
+/* Deallocate */
+int deallocate(char *trozos[], MemList *M, MemList *S, MemList *MP){
+    MPos p;
+    key_t cl;
+
+    if (strcmp(trozos[1], "-malloc") == 0){
+        if(trozos[2] != NULL) {
+            int tam = atoi(trozos[2]);  // Tamaño del bloque
+
+            if(tam == 0){
+                printf("No puede ser un bloque de 0 bytes\n");
+                return 0;
+            }
+
+            if(tam < 0){  // Si es negativo (no se puede hacer malloc)
+                printf("No es posible hacer malloc\n");
+                return 0;
+            }
+
+            p = findBlock(tam, *M);  // Buscar la posicion del bloque
+            deleteAtPosition(p, M);  // Eliminar de la lista
+        }
+
+        else  // Mostrar lista de direcciones (deallocate -malloc)
+            printMemList(*M, 0);
+    }
+
+    else if (strcmp(trozos[1], "-shared") == 0){
+        if(trozos[2] != NULL) {
+            cl = (key_t) strtoul(trozos[2], NULL, 10);  // Clave
+            p = findKeyBlock(cl, *S);
+
+            deleteAtPosition(p, S);
+        }
+        else
+            printMemList(*S, 1);
+    }
+
+    else if (strcmp(trozos[1], "-delkey") == 0) {
+        if(trozos[2] != NULL)
+            do_DeallocateDelkey(trozos);
+    }
+
+    else if (strcmp(trozos[1], "-mmap") == 0) {
+        if(trozos[2] != NULL) {
+            p = findMmapBlock(trozos[2], *MP);
+            deleteAtPosition(p, MP);
+        }
+
+        else
+            printMemList(*MP, 2);
+    }
+
+    else if (trozos[1] != NULL)  // addr
+        if(deleteAddr(trozos[1], *M, *S, *MP) == -1)
+            printf("No se ha podido borrar en la direccion %s\n", trozos[1]);
+
+    return 0;
+}
+
+int i_o(char *trozos[], MemList *M, MemList *S, MemList *MP){
+    int op = 0;
+
+    if(trozos[1] != NULL){
+        if(strcmp(trozos[1], "read") == 0) {  // i-o read
+            do_I_O_read(trozos);
+        }
+
+        else if(strcmp(trozos[1], "write") == 0){
+            if(trozos[5] != NULL && strcmp(trozos[5], "-o") == 0)
+                op = 1;  // Sobreescribir
+
+            EscribirFichero(trozos[2], trozos[3], atoi(trozos[4]), op);
+        }
+    }
+}
+
+int memdump(char *trozos[], int ntrozos){
+    if(ntrozos == 3) {  // memdump addr cont
+        char *ptr;
+        long addr = strtoul(trozos[1], &ptr, 16);
+
+        int cont = atoi(trozos[2]);
+
+    }
+    return 0;
+}
+
+/* Recurse */
+void recursiva(char trozos[1]){
+    int N = atoi(trozos);  // Convertir de char a int
+
+    Recursiva(N);
+}
+
+void memory(char *trozos[], int ntrozos){
+    
+    if(strcmp(trozos[1],"-blocks") == 0 ){// printea bloques memoria de unn proceso
+         printf("*****Lista de bloques asignados para el proceso %d\n", getpid());
+         //completar jejeje
+
+    }else if(strcmp(trozos[1],"-funcs") == 0){//printea dir memoria de funciones propias y globales
+        printf("Funciones Locales:\t%p, %p, %p",fecha ,pimplarDir ,stat);
+        printf("Funciones Globales:\t %p, %p, %p",malloc ,strtoul , scanf);
+
+    }else if(strcmp(trozos[1],"-vars") == 0){//printea dir memoria de 9 variables cada 3 de distinto tipo
+        auto int ia=0, ja=0, ka=0;
+        static int is=0, js=0, ks=0;
+
+        printf("Variables Globales:\t%p, %p, %p\n",&xg, &yg, &zg);
+        printf("Variables Locales:\t%p, %p, %p\n",&ia, &ja, &ka);
+        printf("Variables Estáticas:\t%p, %p, %p\n",&is, &js, &ks);
+
+    }else if(strcmp(trozos[1],"-all") == 0){//printea blocks funcs y vars
+        memory("-blocks",1);
+        memory("-funcs",1);
+        memory("-vars",1);
+
+    }else if(strcmp(trozos[1],"-pmap") == 0){//hace pmap de codigo de ayuda
+        Do_pmap();
+
+    }
+
+}

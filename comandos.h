@@ -1,12 +1,9 @@
-/* Claudia Maciel Montero */
-/* c.maciel  */
-/* Sergio Vila Riveira */
-/* sergio.vila1 */
-
 #ifndef CLION_COMANDOS_H
 #define CLION_COMANDOS_H
 
 #include "lista.h"
+#include "MemList.h"
+
 #include <sys/utsname.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -19,7 +16,6 @@
 #include <grp.h>
 
 #define MAX 100
-#define BUF 1024
 
 void autores(char trozos[1], int ntrozos);
 
@@ -37,18 +33,27 @@ void ayuda(char trozos[1], int ntrozos);
 
 void salir(char trozos[0]);
 
-void comandoN(char trozos[1], int ntrozos, List *head);
-int leerEntrada(char *cadena, int terminado, List *head);
+void comandoN(char trozos[1], int ntrozos, List *head, MemList *M, MemList *S, MemList *MP);
+int leerEntrada(char *cadena, int terminado, List *head, MemList *M, MemList *S, MemList *MP);
 
 void create(char *trozos[], int ntrozos);
 
 void stats(char *trozos[], int ntrozos);
 
 int list(char *trozos[], int ntrozos);
-bool list_dir(char *name, int op[]);
 
 int delete(char *trozos[], int ntrozos);
 
 int deltree(char *trozos[], int ntrozos);
+
+int allocate(char *trozos[], MemList *M, MemList *S, MemList *MP);
+
+int deallocate(char *trozos[], MemList *M, MemList *S, MemList *MP);
+
+int i_o(char *trozos[], MemList *M, MemList *S, MemList *MP);
+
+int memdump(char *trozos[], int ntrozos);
+
+void recursiva(char trozos[1]);
 
 #endif //CLION_COMANDOS_H

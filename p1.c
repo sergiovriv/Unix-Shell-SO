@@ -1,7 +1,5 @@
 /* Claudia Maciel Montero */
 /* c.maciel  */
-/* Sergio Vila Riveira */
-/* sergio.vila1 */
 
 #include <stdio.h>
 #include <string.h>
@@ -25,7 +23,7 @@ void imprimirPrompt(){
     printf("$ ");
 }
 
-void procesarEntrada(char *trozos[], int ntrozos, List *head){
+void procesarEntrada(char *trozos[], int ntrozos, List *head, MemList *M, MemList *S, MemList *MP){
     if(strcmp(trozos[0], "autores") == 0)  // Autores
         autores(trozos[1], ntrozos);
 
@@ -45,15 +43,9 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head){
         carpeta(trozos, ntrozos);
 
     else if(strcmp(trozos[0], "comando") == 0)   // ComandoN
-        comandoN(trozos[1], ntrozos, head);
+        comandoN(trozos[1], ntrozos, head, M, S, MP);
 
-    else if(strcmp(trozos[0], "salir") == 0) // Salir (salir)
-        salir(trozos[0]);
-
-    else if(strcmp(trozos[0], "bye") == 0) // Salir (bye)
-        salir(trozos[0]);
-
-    else if(strcmp(trozos[0], "fin") == 0) // Salir (fin)
+    else if(strcmp(trozos[0], "salir") == 0 || strcmp(trozos[0], "bye") == 0 || strcmp(trozos[0], "fin") == 0) // Salir (salir, bye, fin)
         salir(trozos[0]);
 
     else if(strcmp(trozos[0], "ayuda") == 0) // Ayuda
@@ -74,11 +66,26 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head){
     else if(strcmp(trozos[0], "deltree") == 0) // DelTree
         deltree(trozos, ntrozos);
 
+    else if(strcmp(trozos[0], "allocate") == 0)  // Allocate
+        allocate(trozos, M, S, MP);
+
+    else if(strcmp(trozos[0], "deallocate") == 0)  // Deallocate
+        deallocate(trozos, M, S, MP);
+
+    else if(strcmp(trozos[0], "i-o") == 0)  // i-o
+        i_o(trozos, M, S, MP);
+
+    else if(strcmp(trozos[0], "i-o") == 0)  // Memdump
+        memdump(trozos, M, S, MP);
+
+    else if(strcmp(trozos[0], "recursiva") == 0)  // Recursiva
+        recursiva(trozos[1]);
+
     else
         printf(" No se ha encontrado el comando\n");
 }
 
-int leerEntrada(char *cadena, int terminado, List *head){
+int leerEntrada(char *cadena, int terminado, List *head, MemList *M, MemList *S, MemList *MP){
     char *trozos[MAX_TROZOS];
     int ntrozos;
 
@@ -87,7 +94,7 @@ int leerEntrada(char *cadena, int terminado, List *head){
     if(ntrozos != 0) {
         terminado = -1;
 
-        procesarEntrada(trozos, ntrozos, head);
+        procesarEntrada(trozos, ntrozos, head, M, S, MP);
     }
     else // Si no se escribio nada salir
         terminado = 0;
@@ -102,18 +109,31 @@ int main(){
     List head;
     createlist(&head);  // Crear la lista nodo cabeza
 
+    MemList mallocList;
+    createMemList(&mallocList);  // Crear lista de malloc
+
+    MemList sharedList;
+    createMemList(&sharedList);  // Crear lista de shared
+
+    MemList mapList;
+    createMemList(&mapList);  // Crear lista de map
+
     while (terminado != 0){
         imprimirPrompt();
 
         fgets(comando, MAX_COM, stdin);
         if (insertItem(comando, &head))  // Añadir el comando a la lista
-        terminado = leerEntrada(comando, terminado, &head);
+        terminado = leerEntrada(comando, terminado, &head, &mallocList, &sharedList, &mapList);
 
         else {
             printf(" * Error: lista vacia\n");  // No se pudo insertar (se borro la lista...)
             createlist(&head);  // Crear la lista
         }
     }
+    deleteList(&head);
+    deleteMemList(&mallocList);
+    deleteMemList(&sharedList);
+    deleteMemList(&mapList);
 
     return 0;
 }
