@@ -76,7 +76,7 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head, MemList *M, MemLis
         i_o(trozos, M, S, MP);
 
     else if(strcmp(trozos[0], "i-o") == 0)  // Memdump
-        memdump(trozos, M, S, MP);
+        printf("a");
 
     else if(strcmp(trozos[0], "recursiva") == 0)  // Recursiva
         recursiva(trozos[1]);

@@ -424,12 +424,13 @@ ssize_t LeerFichero (char *f, void *p, size_t cont) {
     return n;
 }
 
-/*
-void *cadtop(char *c){
+
+int *cadtop(char *c){
     void *p;
 
-    p = sscanf("%d", );
-}  */
+    sscanf(c, "%p", &p);
+    return p;
+}  
 
 void do_I_O_read (char *ar[]) {
     void *p;

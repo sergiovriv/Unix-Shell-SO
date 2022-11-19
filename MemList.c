@@ -166,7 +166,7 @@ void deleteMemList(MemList *L){
 }
 
 /* Imprimir la lista */
-void printMemList(MemList L, int op){  // -malloc = 0, -shared/-createshared = 1, -mmap = 2
+void printMemList(MemList L, int op){  // -malloc = 0, -shared/-createshared = 1, -mmap = 2, all= 3
     MPos aux;
 
     if(op == 0) {   // Lista malloc
@@ -185,6 +185,20 @@ void printMemList(MemList L, int op){  // -malloc = 0, -shared/-createshared = 1
         printf("----- Lista de bloques asignados mmap para el proceso %d -----\n", getpid());
         for(aux = L -> next; aux != NULL; aux = aux -> next)
             printf("\t %p \t %lu \t %s  %s (descriptor %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.name, aux->data.df);
+    }
+
+    else if(op ==3) {
+        printf("----- Lista de bloques asignados para el proceso %d -----\n",getpid()); //hace falta para memory block y hay que hacerlo asi
+                                                                                        //para q imprima todo por orden
+        for(aux = L -> next; aux != NULL; aux = aux -> next)
+            printf("\t %p \t %lu \t %s\n", aux->data.dir, aux->data.size, aux->data.time);
+
+        for(aux = L -> next; aux != NULL; aux = aux -> next)
+            printf("\t %p \t %lu \t %s (key %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.key);
+
+        for(aux = L -> next; aux != NULL; aux = aux -> next)
+            printf("\t %p \t %lu \t %s  %s (descriptor %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.name, aux->data.df);
+
     }
 }
 

@@ -557,7 +557,7 @@ void memory(char *trozos[], int ntrozos){
     
     if(strcmp(trozos[1],"-blocks") == 0 ){// printea bloques memoria de unn proceso
          printf("*****Lista de bloques asignados para el proceso %d\n", getpid());
-         //completar jejeje
+         //printMemList(, 3);
 
     }else if(strcmp(trozos[1],"-funcs") == 0){//printea dir memoria de funciones propias y globales
         printf("Funciones Locales:\t%p, %p, %p",fecha ,pimplarDir ,stat);
