@@ -57,7 +57,14 @@ ssize_t LeerFichero (char *f, void *p, size_t cont);
 void do_I_O_read (char *ar[]);
 ssize_t EscribirFichero (char *f, void *p, size_t cont,int overwrite);
 
-void Recursiva (int n);
+void *cadtop(char *c);
+
+void LlenarMemoria (void *p, size_t cont, unsigned char byte, int op);
 
 void Do_pmap (void);
+
+void Recursiva (int n);
+
+
 #endif //CLION_AUX_H
+

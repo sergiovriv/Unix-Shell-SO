@@ -1,5 +1,7 @@
 /* Claudia Maciel Montero */
 /* c.maciel  */
+/* Sergio Vila Riveira */
+/* sergio.vila1 */
 
 #include <stdio.h>
 #include <string.h>
@@ -34,7 +36,7 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head, MemList *M, MemLis
         fecha(trozos[1], ntrozos);
 
     else if(strcmp(trozos[0], "infosis") == 0)  // Infosis
-            infosis(trozos[1]);
+            infosis();
 
     else if(strcmp(trozos[0], "hist") == 0)  // Hist
         hist(trozos[1], ntrozos, head);
@@ -73,10 +75,16 @@ void procesarEntrada(char *trozos[], int ntrozos, List *head, MemList *M, MemLis
         deallocate(trozos, M, S, MP);
 
     else if(strcmp(trozos[0], "i-o") == 0)  // i-o
-        i_o(trozos, M, S, MP);
+        i_o(trozos);
 
-    else if(strcmp(trozos[0], "i-o") == 0)  // Memdump
-        printf("a");
+    else if(strcmp(trozos[0], "memdump") == 0)  // Memdump
+        memdump(trozos, ntrozos);
+
+    else if(strcmp(trozos[0], "memfill") == 0)  // Memfill
+        memfill(trozos, ntrozos);
+
+    else if(strcmp(trozos[0], "memory") == 0)  // Memory
+        memory(trozos, *M, *S, *MP);
 
     else if(strcmp(trozos[0], "recursiva") == 0)  // Recursiva
         recursiva(trozos[1]);
@@ -107,16 +115,11 @@ int main(){
     int terminado = -1;
 
     List head;
-    createlist(&head);  // Crear la lista nodo cabeza
+    createlist(&head);
 
     MemList mallocList;
-    createMemList(&mallocList);  // Crear lista de malloc
-
     MemList sharedList;
-    createMemList(&sharedList);  // Crear lista de shared
-
     MemList mapList;
-    createMemList(&mapList);  // Crear lista de map
 
     while (terminado != 0){
         imprimirPrompt();
@@ -131,9 +134,14 @@ int main(){
         }
     }
     deleteList(&head);
-    deleteMemList(&mallocList);
-    deleteMemList(&sharedList);
-    deleteMemList(&mapList);
+    if(mallocList != NULL)
+        deleteMemList(&mallocList);
+
+    if(sharedList != NULL)
+         deleteMemList(&sharedList);
+
+    if(mapList != NULL)
+        deleteMemList(&mapList);
 
     return 0;
 }

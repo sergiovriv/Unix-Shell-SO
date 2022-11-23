@@ -20,13 +20,12 @@ void createMemList (MemList *L){
     }
 }
 
-/*
 /* Primero de la lista
 MPos first(MemList L){
     return L->next;
 }
 
-/* Ultimo de la lista
+ Ultimo de la lista
 MPos last(MemList L){
     MPos aux;
 
@@ -122,6 +121,8 @@ void deleteAtPosition(MPos p, MemList *L){
         p->next = aux->next;
         p = aux;
     }
+    if(strcmp(p->data.type, "malloc") == 0)
+         free(p->data.dir);
     free(p);
 }
 
@@ -161,45 +162,58 @@ void deleteMemList(MemList *L){
     while(*L != NULL){  // Vamos borrando cada elemento uno a uno
         p = *L;
         *L = (*L)->next;  // Vamos desplazando p
+
+       if(strcmp(p->data.type, "malloc") == 0)
+            free(p->data.dir);
+
         free(p);  // Liberamos memoria de p
     }
 }
 
 /* Imprimir la lista */
-void printMemList(MemList L, int op){  // -malloc = 0, -shared/-createshared = 1, -mmap = 2, all= 3
+void printMemList(MemList L, int op){  // -malloc = 0, -shared/-createshared = 1, -mmap = 2
     MPos aux;
 
-    if(op == 0) {   // Lista malloc
-        printf("----- Lista de bloques asignados malloc para el proceso %d -----\n", getpid());
-        for(aux = L -> next; aux != NULL; aux = aux -> next)
-            printf("\t %p \t %lu \t %s\n", aux->data.dir, aux->data.size, aux->data.time);
+    if(L != NULL) {
+        if (op == 0) {   // Lista malloc
+            printf("----- Lista de bloques asignados malloc para el proceso %d -----\n", getpid());
+            for (aux = L->next; aux != NULL; aux = aux->next)
+                printf("\t %p \t %lu \t %s\n", aux->data.dir, aux->data.size, aux->data.time);
+
+        } else if (op == 1) { // Lista shared
+            printf("----- Lista de bloques asignados shared para el proceso %d -----\n", getpid());
+            for (aux = L->next; aux != NULL; aux = aux->next)
+                printf("\t %p \t %lu \t %s (key %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.key);
+
+        } else if (op == 2) { // Lista mmap
+            printf("----- Lista de bloques asignados mmap para el proceso %d -----\n", getpid());
+            for (aux = L->next; aux != NULL; aux = aux->next)
+                printf("\t %p \t %lu \t %s  %s (descriptor %d)\n", aux->data.dir, aux->data.size, aux->data.time,
+                       aux->data.name, aux->data.df);
+        }
     }
+}
 
-    else if(op == 1) { // Lista shared
-        printf("----- Lista de bloques asignados shared para el proceso %d -----\n", getpid());
-        for(aux = L -> next; aux != NULL; aux = aux -> next)
-            printf("\t %p \t %lu \t %s (key %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.key);
-    }
+void printMemList2(MemList L, MemList S, MemList MP){
+    MPos aux;
+   // Imprimir todos los bloques asigandos
+   printf("----- Lista de bloques asignados para el proceso %d -----\n",getpid());
 
-    else if(op == 2) { // Lista mmap
-        printf("----- Lista de bloques asignados mmap para el proceso %d -----\n", getpid());
-        for(aux = L -> next; aux != NULL; aux = aux -> next)
-            printf("\t %p \t %lu \t %s  %s (descriptor %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.name, aux->data.df);
-    }
+   if(L != NULL) {
+       for (aux = L->next; aux != NULL; aux = aux->next)
+           printf("\t %p \t %lu \t %s\n", aux->data.dir, aux->data.size, aux->data.time);
+   }
 
-    else if(op ==3) {
-        printf("----- Lista de bloques asignados para el proceso %d -----\n",getpid()); //hace falta para memory block y hay que hacerlo asi
-                                                                                        //para q imprima todo por orden
-        for(aux = L -> next; aux != NULL; aux = aux -> next)
-            printf("\t %p \t %lu \t %s\n", aux->data.dir, aux->data.size, aux->data.time);
+   if(S != NULL) {
+       for (aux = S->next; aux != NULL; aux = aux->next)
+           printf("\t %p \t %lu \t %s (key %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.key);
+   }
 
-        for(aux = L -> next; aux != NULL; aux = aux -> next)
-            printf("\t %p \t %lu \t %s (key %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.key);
-
-        for(aux = L -> next; aux != NULL; aux = aux -> next)
-            printf("\t %p \t %lu \t %s  %s (descriptor %d)\n", aux->data.dir, aux->data.size, aux->data.time, aux->data.name, aux->data.df);
-
-    }
+   if(MP != NULL) {
+       for (aux = MP->next; aux != NULL; aux = aux->next)
+           printf("\t %p \t %lu \t %s  %s (descriptor %d)\n", aux->data.dir, aux->data.size, aux->data.time,
+                  aux->data.name, aux->data.df);
+   }
 }
 
 /* Buscar un bloque de memoria a partir de su clave */
@@ -234,4 +248,6 @@ MPos findMmapBlock(char *name, MemList L){
     else
         return NULL;
 }
+
+
 

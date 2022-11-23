@@ -4,6 +4,7 @@
 #include "lista.h"
 #include "MemList.h"
 
+#include <stdlib.h>
 #include <sys/utsname.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -23,7 +24,7 @@ void fecha(char trozos[1], int ntrozos);
 
 void pid(char trozos[1], int ntrozos);
 
-void infosis(char trozos[1]);
+void infosis();
 
 void hist(char trozos[1], int ntrozos, List *head);
 
@@ -50,9 +51,13 @@ int allocate(char *trozos[], MemList *M, MemList *S, MemList *MP);
 
 int deallocate(char *trozos[], MemList *M, MemList *S, MemList *MP);
 
-int i_o(char *trozos[], MemList *M, MemList *S, MemList *MP);
+int i_o(char *trozos[]);
 
 int memdump(char *trozos[], int ntrozos);
+
+int memfill(char *trozos[], int ntrozos);
+
+void memory(char *trozos[], MemList M, MemList S, MemList MP);
 
 void recursiva(char trozos[1]);
 

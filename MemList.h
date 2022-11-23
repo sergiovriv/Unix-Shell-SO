@@ -57,9 +57,11 @@ int deleteAddr(char *dir, MemList M, MemList S, MemList MP);
 void deleteMemList(MemList *L);
 
 void printMemList(MemList L, int op);
+void printMemList2(MemList L, MemList S, MemList MP);
 
 MPos findKeyBlock(int clave, MemList L);
 MPos findBlock(int tam, MemList L);
 MPos findMmapBlock(char *name, MemList L);
 
 #endif //CLION_MEMLIST_H
+

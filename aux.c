@@ -3,8 +3,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/utsname.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
@@ -104,8 +102,6 @@ bool list_dir(char *name, int op[]) {
     struct dirent *entry;
     char aux[MAX];
     struct stat buf;
-
-    dir = opendir(name);
 
     if((dir = opendir(name)) == NULL)
         return false;
@@ -340,6 +336,7 @@ void do_AllocateCreateshared (char *tr[], MemList L) {
     }
     if ((p = ObtenerMemoriaShmget(cl, tam, &L)) != NULL) {
         printf("Asignados %lu bytes en %p\n", (unsigned long) tam, p);
+        LlenarMemoria(p, 26, 0, 0);
     }
     else
         printf ("Imposible asignar memoria compartida clave %lu: %s\n",(unsigned long) cl,strerror(errno));
@@ -424,13 +421,12 @@ ssize_t LeerFichero (char *f, void *p, size_t cont) {
     return n;
 }
 
-
-int *cadtop(char *c){
+void *cadtop(char *c){
     void *p;
 
     sscanf(c, "%p", &p);
     return p;
-}  
+}
 
 void do_I_O_read (char *ar[]) {
     void *p;
@@ -452,14 +448,14 @@ void do_I_O_read (char *ar[]) {
         printf ("Leidos %lld bytes de %s en %p\n",(long long) n, ar[2], p);
 }
 
-ssize_t EscribirFichero (char *f, void *p, size_t cont,int overwrite) {
+ssize_t EscribirFichero (char *f, void *p, size_t cont, int overwrite) {
     ssize_t  n;
     int df,aux, flags = O_CREAT | O_EXCL | O_WRONLY;
 
     if (overwrite == 1)
         flags = O_CREAT | O_WRONLY | O_TRUNC;
 
-    if ((df = open(f,flags,0777)) == -1)
+    if ((df = open(f,flags, 0777)) == -1)
         return -1;
 
     if ((n = write(df,p,cont)) == -1){
@@ -472,32 +468,50 @@ ssize_t EscribirFichero (char *f, void *p, size_t cont,int overwrite) {
     return n;
 }
 
+void LlenarMemoria (void *p, size_t cont, unsigned char byte, int op) {
+    unsigned char *arr = (unsigned char *) p;
+    size_t i;
 
+    if(op == 1)
+        printf("Llenando %zu bytes de memoria con el byte (%d) a partir de la direccion %p\n", cont, byte, arr);
 
-void Do_pmap (void) /*sin argumentos*/
-{ pid_t pid;       /*hace el pmap (o equivalente) del proceso actual*/
+    for (i = 0; i < cont; i++)
+        arr[i] = byte;
+}
+
+void Do_pmap (void){ /*sin argumentos*/
+    pid_t pid;   /*hace el pmap (o equivalente) del proceso actual*/
     char elpid[32];
-    char *argv[4]={"pmap",elpid,NULL};
+    char *argv[4] = {"pmap",elpid,NULL};
 
     sprintf (elpid,"%d", (int) getpid());
-    if ((pid=fork())==-1){
+    if ((pid = fork()) == -1){
         perror ("Imposible crear proceso");
         return;
     }
-    if (pid==0){
-        if (execvp(argv[0],argv)==-1)
+    if (pid == 0){
+        if (execvp(argv[0],argv) == -1)
             perror("cannot execute pmap (linux, solaris)");
 
-        argv[0]="procstat"; argv[1]="vm"; argv[2]=elpid; argv[3]=NULL;
-        if (execvp(argv[0],argv)==-1)/*No hay pmap, probamos procstat FreeBSD */
+        argv[0] = "procstat";
+        argv[1] = "vm";
+        argv[2] = elpid;
+        argv[3] = NULL;
+
+        if (execvp(argv[0],argv) == -1)/*No hay pmap, probamos procstat FreeBSD */
             perror("cannot execute procstat (FreeBSD)");
 
-        argv[0]="procmap",argv[1]=elpid;argv[2]=NULL;
-        if (execvp(argv[0],argv)==-1)  /*probamos procmap OpenBSD*/
+        argv[0] = "procmap", argv[1] = elpid;
+        argv[2] = NULL;
+
+        if (execvp(argv[0],argv) == -1)  /*probamos procmap OpenBSD*/
             perror("cannot execute procmap (OpenBSD)");
 
-        argv[0]="vmmap"; argv[1]="-interleave"; argv[2]=elpid;argv[3]=NULL;
-        if (execvp(argv[0],argv)==-1) /*probamos vmmap Mac-OS*/
+        argv[0] = "vmmap";
+        argv[1] = "-interleave";
+        argv[2] = elpid;argv[3] = NULL;
+
+        if (execvp(argv[0],argv) == -1) /*probamos vmmap Mac-OS*/
             perror("cannot execute vmmap (Mac-OS)");
         exit(1);
     }
@@ -508,7 +522,7 @@ void Recursiva (int n) {
     char automatico[TAMANO];
     static char estatico[TAMANO];
 
-    printf ("parametro:%3d(%p) array %p, arr estatico %p\n",n,&n,automatico, estatico);
+    printf ("parametro:%3d(%p) array %p, arr estatico %p\n",n, &n, automatico, estatico);
 
     if (n > 0)
         Recursiva(n-1);
