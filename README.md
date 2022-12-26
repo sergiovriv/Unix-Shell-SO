@@ -79,3 +79,10 @@ We used a linked list with a head node to store and manage the various tasks tha
 The use of a linked list allowed us to easily add, remove, and access elements in the list, as well as to keep track of the size of the list. It also allowed us to implement advanced features such as piping and redirection, which required the ability to manipulate the list in real-time.
 
 Overall, the use of a linked list with a head node was an important part of the development of the console, and contributed to its functionality and efficiency.
+
+# Authors #
+
+Claudia Maciel
+Sergio Vila
+
+We hope that our Unix Command Line Console will be useful for you and that it will help you to interact with your Unix system in a more efficient and convenient way. We welcome any feedback or contributions that you may have, and we hope that you find this project useful. Thank you for using our console!
