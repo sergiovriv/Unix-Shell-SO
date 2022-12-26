@@ -82,7 +82,6 @@ Overall, the use of a linked list with a head node was an important part of the 
 
 # Authors #
 
-Claudia Maciel
-Sergio Vila
+Claudia Maciel and Sergio Vila
 
 We hope that our Unix Command Line Console will be useful for you and that it will help you to interact with your Unix system in a more efficient and convenient way. We welcome any feedback or contributions that you may have, and we hope that you find this project useful. Thank you for using our console!
