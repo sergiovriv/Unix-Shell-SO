@@ -6,7 +6,7 @@
 
 typedef struct Node* Pos;
 typedef struct Item {
-    char comando[20];  // Nombre del comando
+    char comando[100];  // Nombre del comando
     int n;  // Numero del comando (para funciones hist, comandoN...)
 } Item;
 

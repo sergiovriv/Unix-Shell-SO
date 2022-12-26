@@ -64,4 +64,3 @@ MPos findBlock(int tam, MemList L);
 MPos findMmapBlock(char *name, MemList L);
 
 #endif //CLION_MEMLIST_H
-

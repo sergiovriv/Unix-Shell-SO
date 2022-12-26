@@ -5,6 +5,8 @@
 #include "comandos.h"
 #include "aux.h"
 
+extern char **environ;
+
 /* Variables globales para memory */
 int xg = 0, yg = 0, zg = 0;
 
@@ -198,14 +200,54 @@ void ayuda(char trozos[1], int ntrozos) {
             printf(" * [vars] muestra las direcciones de las variables\n");
             printf(" * [all] muestra todo\n");
             printf(" * [pmap] muestra la salida del comando pmap (o similar)\n");
+
+        } else if (strcmp(trozos, "priority") == 0)  // priority
+                printf("priority [pid][valor] Muestra o cambia la prioridad del proceso pid a valoro\n");
+
+        else if (strcmp(trozos, "showvar") == 0) // showvar
+            printf("showvar var Muestra el valor y las direcciones de la variable de entorno var\n");
+
+        else if (strcmp(trozos, "showenv") == 0) { // showenv
+            printf("showenv [-environ|-addr] Mustra el entorno del proceso\n");
+            printf(" * [-environ] usando environ\n * [-addr] muestra donde se almacenan environ y el 3er arg main\n");
+        }
+
+        else if (strcmp(trozos, "changevar") == 0) { // changevar
+            printf("changevar [-a|-e|-p] var valor Cambia el valor de una variable de entorno\n");
+            printf(" * [-a] accede por el 3er arg main\n * [-e] accede por environ\n");
+            printf(" * [-p] accede por putenv\n");
+        }
+
+        else if (strcmp(trozos, "fork") == 0)  // fork
+            printf("fork El shell hace fork y queda en espera a que su hijo termine\n");
+
+        else if (strcmp(trozos, "execute") == 0) { // execute
+            printf("execute [VAR1 VAR2..] prog args [@pri] Ejecuta, sin crear un proceso, prog con los arguementos args\n");
+            printf("en un entorno solo con las variables VAR1 VAR2..\n");
+        }
+
+        else if (strcmp(trozos, "listjobs") == 0)  // listjobs
+            printf("listjobs Muestra la lista de procesos en segundo plano\n");
+
+        else if (strcmp(trozos, "deljobs") == 0) {  // deljobs
+            printf("deljobs [-term][-sig] Elimina los procesos de la lista de procesos en segundo plano\n");
+            printf(" * [-term] Elimina los procesos terminados\n");
+            printf(" * [-sig] Elimina los procesos terminados por senal\n");
+        }
+
+        else if (strcmp(trozos, "job") == 0) {  // job
+            printf("job [-fg] pid\tMuestra informacion del proceso pid.\n");
+            printf(" * [-fg] Lo pasa a primer plano\n");
         }
     }
+
     else {  // Mostrar todos los comandos
         printf(" Comandos disponibles:\nautores [-l|-n] / pid [-p] / carpeta (direct) / fecha [-d|-h] / hist [-c|-N] / ");
         printf("comando N / infosis / ayuda [cmd] / fin / salir / bye\ncreate [-f][name] / stat [-long][-acc][-link] name1 name2... / delete name1, name2... / ");
         printf("list [-long][-link][-acc][-reca][-recb][-hid] name1, name2... / deltree name1, name2...\nallocate [-malloc|-createshared|-shared|-mmap] / ");
         printf("deallocate [-malloc|-shared|-delkey|-mmap|addr] / i-o [read|write] [-o] fich addr cont / memdump addr cont / memfill addr cont byte\n");
-        printf("memory [-blocks|-funcs|-vars|-all|-pmap] / recursiva [n]\n");
+        printf("memory [-blocks|-funcs|-vars|-all|-pmap] / recursiva [n] / priority [pid][valor] / fork / showvar var / \n");
+        printf("showenv [-environ|-addr] / changevar [-a|-e|-p] var valor / execute [VAR1 VAR2..] prog args [@pri] / listjobs / deljobs [-term][-sig] / job\n");
     }
 }
 
@@ -222,7 +264,8 @@ void salir(char trozos[0]){
 }
 
 /* Repetir el comando numero N */
-void comandoN(char trozos[1], int ntrozos, List *head, MemList *M, MemList *S, MemList *MP) {
+void comandoN(char trozos[1], int ntrozos, int argc, char* argv[], char* envp[],
+              List *head, MemList *M, MemList *S, MemList *MP, ProcList *L) {
     int N;
     char *comando;
 
@@ -231,7 +274,7 @@ void comandoN(char trozos[1], int ntrozos, List *head, MemList *M, MemList *S, M
         comando = find_n(N, head);
 
         printf("%s\n", comando);
-        leerEntrada(comando, ntrozos, head, M, S, MP);  // Repetir el comando
+        leerEntrada(comando, ntrozos, argc, argv, envp, head, M, S, MP, L);  // Repetir el comando
     }
 }
 
@@ -699,4 +742,318 @@ void recursiva(char trozos[1]){
     int N = atoi(trozos);  // Convertir de char a int
 
     Recursiva(N);
+}
+
+/* Priority */
+int priority(char *trozos[], int ntrozos){
+    int proceso = 0;
+    int pidshell = getpid();
+    int pshell = getpriority(0, PRIO_PROCESS);
+
+    if(ntrozos == 1)
+        printf("La prioridad de esta shell (PID=%d) es %d\n", pidshell, pshell);
+
+    else if(ntrozos >= 2) {
+        if (trozos[2] == NULL) {
+            int prior = atoi(trozos[1]);
+            if (prior > -20 && prior < 19) {  // Cambiar prioridad
+                if (setpriority(proceso, PRIO_PROCESS, prior) == -1) {
+                    printf("Imposible obtener la prioridad del proceso %d\n", proceso);
+                    return -1;
+                }
+                printf("Prioridad del PID=%d actualizada a %d\n", proceso, prior);
+            }
+            else
+                printf("La prioridad de esta shell (PID=%d) es %d\n", pidshell, pshell);
+        }
+        else { // se indica pid y valor
+            int prior = atoi(trozos[2]);
+            if (prior > -20 && prior < 19) {  // Cambiar prioridad
+                if (setpriority(proceso, PRIO_PROCESS, prior) == -1) {
+                    printf("Imposible obtener la prioridad del proceso %d\n", proceso);
+                    return -1;
+                }
+            }
+            printf("Prioridad del PID=%d actualizada a %d\n", proceso, prior);
+        }
+    }
+    return 0;
+}
+
+/* Showenv */
+int showenv(char *trozos[], char * envp[]){
+    int t=0;
+
+    if(trozos[1] != NULL){
+        if(strcmp(trozos[1],"-environ")== 0){
+            while(environ[t] != NULL){
+              printf("%p -> environ[%d]=(%p) %s\n", &environ[t], t,environ[t],environ[t]);
+              t++;
+            }
+        } else if(strcmp(trozos[1],"-addr") == 0) {
+            printf("environ: %p (almacenado en %p)\n", &environ, &environ);
+            printf("environ: %p (almacenado en %p)\n", &envp, &envp);
+        }
+    } else {
+        while (envp[t] != NULL) {
+            printf("%p -> main[%d]=(%p) %s\n", &environ[t], t, environ[t], environ[t]);
+            t++;
+        }
+    }
+    return 0;
+}
+
+/* Showvar */
+int showvar(char *trozos[],  char *envp[]){
+    int j=0; //contador
+    int m,e; //del main y del environ
+    char *get; //pal getenv
+
+    if(trozos[1] != NULL){
+        m= BuscarVariable(trozos[1], envp);
+        e= BuscarVariable(trozos[1], environ);
+        get = getenv(trozos[1]);
+
+        printf("Con arg3 main %s(%p) @%p\n", envp[m], envp[m], &envp[m]);
+        printf("Con environ %s(%p) @%p\n",environ[e],environ[e],&environ[e]);
+        printf("Con getenv %s(%p)\n", get, get);
+
+    }else{
+        while (envp[j] != NULL){
+            printf("%p->main arg3 [%d]=(%p) %s\n",&envp[j], j, envp[j], envp[j]);
+            j++;
+        }
+    }
+    return 0;
+}
+
+/* Changevar */
+int changevar(char *trozos[], int ntrozos, char *envp[]){
+    char *varname = malloc(MAX);
+
+    if(ntrozos < 3)
+        printf("Uso: changevar [-a|-e|-p] var valor\n");
+    else {
+        if (ntrozos == 4) {
+            if (strcmp(trozos[1], "-a") == 0) {
+                //usando envp
+                CambiarVariable(trozos[2], trozos[3], envp);
+            } else if (strcmp(trozos[1], "-e") == 0) {
+                //usando environ
+                CambiarVariable(trozos[2], trozos[3], environ);
+            } else if (strcmp(trozos[1], "-p") == 0) {
+                //formamos la VAR con la estructura conocida
+                strcpy(varname, trozos[2]);
+                strcat(varname, "=");
+                strcat(varname, (trozos[3]));
+                //llamamos a la función con nuestra variable
+                putenv(varname);
+            }
+        }
+    }
+    return 0;
+}
+
+/* Fork */
+int forkin(ProcList *L){
+    int proc;
+
+    if((proc = fork()) == 0){
+        deleteProcList(L);
+        printf("Ejecutando proceso %d\n", getpid()); //se hace fork y en el
+        //print pilla nuevo pid
+    }else if(proc == -1){
+        perror("fork: no se puede crear fork\n"); //error
+        return 0;
+
+    }else{
+        waitpid(proc, NULL, 0); //con opcion 0 vuelve al anterior
+    }
+    return 0;
+}
+
+/* Ejecutar en primer plano */
+int primer_plano(char *argv[], char *envp[], char *trozos[]) {
+    int pid = fork();
+    int j = 0, i, k = 0;
+    char *var[50] = {};
+    char *ejecutable[50] = {};
+
+    if (trozos[0] != NULL) {
+        for (i = 0; trozos[i] != NULL; i++) {
+            if ((var[i] = envp[BuscarVariable(trozos[i], __environ)]) != NULL) {   // Variables
+                j++;
+                continue;
+            }
+
+            if (trozos[i][0] == '@') {  // Prioridad
+                if (setpriority(PRIO_PROCESS, getpid(), atoi(&trozos[i][1])) == -1) {
+                    perror("setpriority: error\n");
+                    return -1;
+                }
+                continue;
+            }
+
+            ejecutable[k] = trozos[i];
+            k++;
+            }
+        }
+        if (pid == 0) {
+            if (j == 0) {  // No se indican variables
+                if (OurExecvpe(ejecutable[0], ejecutable, envp) == -1)
+                    perror("no ejecutado\n");
+            }
+            else {
+                if(OurExecvpe(ejecutable[0], ejecutable, var) == -1) // Variables
+                    perror("no ejecutado\n");
+            }
+        } else
+            waitpid(pid, NULL, 0);
+    return 0;
+}
+
+/* Ejecutar en segundo plano */
+int segundo_plano(char *argv[], char *envp[], char *trozos[], ProcList *L) {
+    int pid = fork();
+    int j = 0, i, k = 0;
+    char *var[50] = {};
+    char *ejecutable[50] = {};
+    int prioridad;
+
+    if (trozos[0] != NULL) {
+        ejecutable[0] = trozos[0];  // Comando
+        for (i = 0; trozos[i] != NULL; i++) {
+            if ((var[i] = envp[BuscarVariable(trozos[i], __environ)]) != NULL) {  // Variables
+                j++;
+                continue;
+            }
+
+            if (trozos[i][0] == '@') {  // Prioridad
+                if (setpriority(PRIO_PROCESS, getpid(), atoi(&trozos[i][1])) == -1) {
+                    perror("setpriority: error\n");
+                    return -1;
+                }
+                continue;
+            }
+            if(i > 0) {
+                ejecutable[k] = trozos[i];  // Comando
+                k++;
+            }
+        }
+
+        if((prioridad = getpriority(PRIO_PROCESS, pid)) == -1)
+            perror("getpriority: error\n");
+
+        if (pid == 0) {
+            if (j == 0)  // No se indican variables
+                execvp(trozos[0], trozos);
+            else
+                OurExecvpe(*ejecutable, argv, var); // Variables
+        }
+        else
+            insertar_proceso(pid, *ejecutable, prioridad, L);
+    }
+    return 0;
+}
+
+/* Execute */
+int execute(char *trozos[], char *argv[], char *envp[]) {
+    int i, j = 0, k = 0;
+    char *var[50] = {}; // Variables
+    char *ejecutable[50] = {};
+
+    if (trozos[1] != NULL) {
+        for (i = 1; trozos[i] != NULL; i++) {
+            if (BuscarVariable(trozos[i], envp) != -1) {   // Variable
+                var[j] = trozos[i];
+                j++;
+                continue;
+            }
+
+            if (i > 1 && trozos[i][0] == '@') {  // Prioridad
+                if (setpriority(PRIO_PROCESS, getpid(), atoi(trozos[i] + 1)) == -1) {
+                    perror("setpriority: error\n");
+                    return -1;
+                }
+                continue;
+            }
+            ejecutable[k] = trozos[i];
+            k++;
+        }
+        if(j == 0)
+            OurExecvpe(ejecutable[0], argv + 1, envp);
+        else
+            OurExecvpe(ejecutable[0], argv + 1, var);
+
+        perror("execute: error\n");
+    }
+    return 0;
+}
+
+/* Listjobs */
+void listjobs(ProcList *L){
+    printProcList(L);
+}
+
+/* Deljobs */
+void deljobs(char *trozos[], ProcList *L){
+    PPos aux;
+
+    if(trozos[1] != NULL) {
+        if (strcmp(trozos[1], "-sig") == 0) {
+            do {
+                for (aux = *L; aux->next != NULL; aux = aux->next) {
+                    if (strcmp(aux->next->data.status, "SIGNALED") == 0) {
+                        deleteProc(L, aux);
+                        break;
+                    }
+                }
+            } while (aux != NULL);
+
+        } else if (strcmp(trozos[1], "-term") == 0) {
+            do {
+                for (aux = *L; aux != NULL; aux = aux->next) {
+                    if (strcmp(aux->data.status, "TERMINADO") == 0) {
+                        deleteProc(L, aux);
+                        break;
+                    }
+                }
+            } while (aux != NULL);
+        }
+    }
+    else
+        printProcList(L);
+}
+
+/* Job */
+void job(char *trozos[], ProcList L){
+    PPos aux;
+    int pid;
+
+    if(trozos[1] != NULL){
+        if(strcmp(trozos[1], "-fg") == 0) {  // Pasar a primer plano
+            pid = atoi(trozos[2]);
+            aux = findProc(pid, L);
+
+            if(strcmp(aux->data.status, "TERMINADO") == 0)
+                printf("El proceso %d ya esta finalizado\n", pid);
+
+            else {
+                waitpid(pid, NULL, 0);
+                printf("Proceso %d terminado normalmente\n", pid);
+            }
+            deleteProc(&L, aux);
+        }
+        else {
+            aux = findProc(atoi(trozos[1]), L);
+
+            if(aux == NULL)
+                printf("Proceso no encontrado\n");
+            else
+                printf(" %d  p=%d %s %s %s\n", aux->data.pid, aux->data.prio, aux->data.time,
+                       aux->data.status, aux->data.comando);
+        }
+    }
+    else
+        printProcList(&L);
 }

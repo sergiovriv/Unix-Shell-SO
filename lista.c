@@ -35,10 +35,10 @@ bool insertItem (char *com, List *head){
     Pos q, aux;
     int i = 1;
 
-    if(!createNode(&q))
+    if(*head == NULL)  // No se puede insertar
         return false;
 
-    if(*head == NULL)  // No se puede insertar
+    if(!createNode(&q))
         return false;
 
     else {
