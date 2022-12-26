@@ -1,4 +1,4 @@
-#Introduction to the project
+##Introduction to the project##
 
 Welcome to our Unix Command Line Console repository! This project was created by two classmates as a way to improve our skills in C programming and Unix systems. The console offers a variety of commands for users to interact with their Unix system, including options for file manipulation, system information, and more. We hope that you find this project useful and we welcome any contributions or feedback you may have.
 
